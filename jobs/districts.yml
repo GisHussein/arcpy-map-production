@@ -1,0 +1,28 @@
+# One A3 map per district, driven by the district boundary layer.
+#
+# Run `mapseries validate jobs/districts.yml` to check the spec without opening
+# ArcGIS, and `mapseries check` to pre-flight the layout itself.
+
+project: C:/projects/red_sea_governorate/red_sea.aprx
+layout: A3_District_Landscape
+output_dir: C:/projects/red_sea_governorate/output/districts
+
+index_layer: District_Boundaries
+name_field: DISTRICT_NAME_EN
+where: "STATUS = 'active'"
+
+name_template: "{layout}_{name}"
+overwrite: false
+
+export:
+  formats: [pdf, png]
+  dpi: 300
+  georeferenced_pdf: true
+  embed_fonts: true
+
+required_elements:
+  - title
+  - scalebar
+  - north_arrow
+  - legend
+  - credits
