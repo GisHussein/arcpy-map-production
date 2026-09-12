@@ -1,0 +1,36 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      # arcpy is not available on CI and never will be. These are the parts
+      # that were deliberately kept independent of it.
+      - name: Tests
+        run: pytest -q
+
+      - name: The spec and naming commands run without ArcGIS
+        run: |
+          mapseries validate jobs/districts.yml
+          mapseries names jobs/districts.yml --preview "Marsa Alam" "Zone 3/4" "Al Qusayr" "Al Qusayr"
